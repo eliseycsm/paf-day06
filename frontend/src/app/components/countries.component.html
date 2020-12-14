@@ -1,6 +1,7 @@
 <p>countries works!</p>
 <div *ngFor="let c of countries" class='list-group'>
     <li class="list-group-item">
-        {{c}}
+        <a  [routerLink]="['/country', c]">
+        {{c}}</a>    
     </li>
 </div>

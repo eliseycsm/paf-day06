@@ -1,10 +1,8 @@
 <p>getcountry works!</p>
 
-<div *ngFor="let c of wineResults">
+<div *ngFor="let c of wineResults; let i = index" [routerLink]="['/wine', c._id]">
     <li class="list-group-item">
-        {{c['_id']}} <br>
-        {{c.title}} <br>
-        {{c.price}}
-
+       #{{i+1}} {{c.title}} <br>
+        {{c._id}}
     </li>
 </div>

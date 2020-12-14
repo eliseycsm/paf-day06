@@ -7,19 +7,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { CountriesComponent } from './components/countries.component';
 import { GetcountryComponent } from './components/getcountry.component'
 import { WineService } from './wine.service';
+import { WineDetailsComponent } from './components/wine-details.component';
 
 
 const ROUTES: Routes = [
   {path: '', component: CountriesComponent},
   {path: 'countries', component: CountriesComponent},
   {path: 'country/:country', component: GetcountryComponent},
+  {path: 'wine/:wineId', component: WineDetailsComponent},
   {path: '**', redirectTo: "/", pathMatch: "full"},
 ]
 @NgModule({
   declarations: [
     AppComponent,
     CountriesComponent,
-    GetcountryComponent
+    GetcountryComponent,
+    WineDetailsComponent
   ],
   imports: [
     BrowserModule,

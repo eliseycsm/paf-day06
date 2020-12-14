@@ -4,6 +4,9 @@ const morgan = require('morgan')
 //import mongodb driver
 const MongoClient = require('mongodb').MongoClient; //npm i mongodb
 
+//need to import ObjectId from mongo
+const ObjectId = require('mongodb').ObjectID
+
 require('dotenv').config()
 
 
@@ -57,11 +60,13 @@ app.get("/countries", async (req, resp) => {
 })
 
 //GET  /country/:country
-
 //create query to retrieve country from wine database in mongodb - 
 app.get("/country/:country", async (req, resp) => {
     let country = req.params.country
+    let limitVal = parseInt(req.query.limit)
+    let offsetVal = parseInt(req.query.offset)
 
+    console.log(`limit, offset = ${limitVal}, ${offsetVal}`)
     //perform query to mongodb 
     //- get country under france using regex, return as json, sort by province
     try{
@@ -72,7 +77,8 @@ app.get("/country/:country", async (req, resp) => {
                 $options: 'i'
             }
         }).sort({ province: 1 })
-        .limit(50)
+        .limit(limitVal) //input MUST BE NUMBER
+        .skip(offsetVal) //skip==offset
         //get objectId as string, title of wine, price
         .project({_id: 1, title: 1, price: 1})  //_id is optional
         .toArray()
@@ -83,6 +89,27 @@ app.get("/country/:country", async (req, resp) => {
         resp.status(500).type('application/json')
         resp.json({error: e})
     }   
+})
+
+//GET /wine/:objId
+app.get("/wine/:wineId", async (req, resp) => {
+    let objId = req.params.wineId
+    console.log("objId: ", objId)
+    try{
+        const result = await mongoClient.db('winemag').collection('wine')   // cos .toArray returns a promise so we need to async await it
+        .find({ _id: ObjectId(`${objId}`)}) //returns a cursor object
+            .toArray() //convert toArray for easy reading
+        //result is [{obj}]
+        console.log("wine details: ", result[0])
+        
+        resp.status(200).type('application/json')
+        resp.json(result[0])
+    }catch(e){
+        resp.status(500).type('application/json')
+        resp.json({error: e})
+    }   
+
+
 })
 
 //here we use the promise of pool to ping
